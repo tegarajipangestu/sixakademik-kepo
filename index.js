@@ -40,10 +40,7 @@ app.get('/kepo/:id', function(req, res){
 
             	if (text.substr(0, text.indexOf(" ")).toLowerCase() === kodekuliah.toLowerCase())
             	{
-								console.log(kodekuliah);
-								console.log(text.substr(0, text.indexOf(" ")).valueOf());
             		link = $(this).find('ul > li:first-child > a').attr('href');
-            		console.log(templateurl+link);
             		res.send(templateurl+link);
             	}
 
