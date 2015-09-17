@@ -1,0 +1,80 @@
+{
+  "kodeprodi":
+  [
+    {
+        "Kode" : "MA",
+        "Angka": 101
+    },
+
+    {
+        "Kode" : "FI",
+        "Angka": 102
+    },
+
+    {
+        "Kode" : "KI",
+        "Angka": 105
+    },
+
+    {
+        "Kode" : "BM",
+        "Angka": 104
+    },
+
+    {
+        "Kode" : "BI",
+        "Angka": 106
+    },
+
+    {
+        "Kode" : "BA",
+        "Angka": 114
+    },
+
+    {
+        "Kode" : "BW",
+        "Angka": 115
+    },
+
+    {
+        "Kode" : "FA",
+        "Angka": 107
+    },
+
+    {
+        "Kode" : "FK",
+        "Angka": 116
+    },
+
+    {
+        "Kode" : "TA",
+        "Angka": 121
+    },
+
+    {
+        "Kode" : "EL",
+        "Angka": 132
+    },
+
+    {
+        "Kode" : "IF",
+        "Angka": 135
+    },
+
+    {
+        "Kode" : "EP",
+        "Angka": 180
+    },
+
+    {
+        "Kode" : "ET",
+        "Angka": 181
+    },
+    
+    {
+        "Kode" : "II",
+        "Angka": 182
+    }
+  ]
+}
+

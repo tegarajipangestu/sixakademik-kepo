@@ -22,36 +22,46 @@ app.get('/', function(request, response) {
 
 app.get('/kepo/:id', function(req, res){
 
-		kodekuliah = req.params.id;
+  kodekuliah = req.params.id;
+  kodematkulprodi = kodekuliah.substr(0,2);
+
+  var obj = JSON.parse(fs.readFileSync('etc/kodeprodi.json', 'utf8'));
+
+		// console.log(obj);
+
+		for (var i =0;i<obj;i++)
+		{
+			console.log(obj['kodeprodi'][i])
+		}
 
 		templateurl = 'https://six.akademik.itb.ac.id/publik/'
-    daftarkelasurl = 'daftarkelas.php?ps=135&semester=1&tahun=2015&th_kur=2013'
+        daftarkelasurl = 'daftarkelas.php?ps=135&semester=1&tahun=2015&th_kur=2013'
 
-    request(templateurl+daftarkelasurl, function(error, response, html){
+        request(templateurl+daftarkelasurl, function(error, response, html){
 
-        if(!error){
-            var $ = cheerio.load(html);
+            if(!error){
+                var $ = cheerio.load(html);
 
-            $('ol').children('li').each(function(index){
-            	var text = $(this).contents().filter(function(){ 
-							  return this.nodeType == 3; 
-							})[0].nodeValue;
+                $('ol').children('li').each(function(index){
+                   var text = $(this).contents().filter(function(){ 
+                       return this.nodeType == 3; 
+                   })[0].nodeValue;
 							// console.log(text);
 
-            	if (text.substr(0, text.indexOf(" ")).toLowerCase() === kodekuliah.toLowerCase())
-            	{
-            		link = $(this).find('ul > li:first-child > a').attr('href');
-            		res.send(templateurl+link);
-            	}
+                           if (text.substr(0, text.indexOf(" ")).toLowerCase() === kodekuliah.toLowerCase())
+                           {
+                              link = $(this).find('ul > li:first-child > a').attr('href');
+                              res.end(templateurl+link);
+                          }
 
-            });
+                      });
 
-            res.send("Not found");
+                res.end("Not found");
+            }
 
-        }
 
-    })
-});
+        })
+    });
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
