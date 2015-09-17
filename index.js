@@ -27,41 +27,36 @@ app.get('/kepo/:id', function(req, res){
 
   var obj = JSON.parse(fs.readFileSync('etc/kodeprodi.json', 'utf8'));
 
-		// console.log(obj);
+  for (var i =0;i<obj;i++)
+  {
+     console.log(obj['kodeprodi'][i]['Kode'])
+ }
 
-		for (var i =0;i<obj;i++)
-		{
-			console.log(obj['kodeprodi'][i]['Kode'])
-		}
+ templateurl = 'https://six.akademik.itb.ac.id/publik/'
+ daftarkelasurl = 'daftarkelas.php?ps=135&semester=1&tahun=2015&th_kur=2013'
 
-		templateurl = 'https://six.akademik.itb.ac.id/publik/'
-        daftarkelasurl = 'daftarkelas.php?ps=135&semester=1&tahun=2015&th_kur=2013'
+ request(templateurl+daftarkelasurl, function(error, response, html){
 
-        request(templateurl+daftarkelasurl, function(error, response, html){
+    if(!error){
+        var $ = cheerio.load(html);
 
-            if(!error){
-                var $ = cheerio.load(html);
+        $('ol').children('li').each(function(index){
+         var text = $(this).contents().filter(function(){ 
+             return this.nodeType == 3; 
+         })[0].nodeValue;
+         if (text.substr(0, text.indexOf(" ")).toLowerCase() === kodekuliah.toLowerCase())
+         {
+            link = $(this).find('ul > li:first-child > a').attr('href');
+            res.end(templateurl+link);
+        }
 
-                $('ol').children('li').each(function(index){
-                   var text = $(this).contents().filter(function(){ 
-                       return this.nodeType == 3; 
-                   })[0].nodeValue;
-							// console.log(text);
-
-                           if (text.substr(0, text.indexOf(" ")).toLowerCase() === kodekuliah.toLowerCase())
-                           {
-                              link = $(this).find('ul > li:first-child > a').attr('href');
-                              res.end(templateurl+link);
-                          }
-
-                      });
-
-                res.end("Not found");
-            }
+    })
+        res.end("Not found");
+    }
 
 
-        })
-    });
+})
+});
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
