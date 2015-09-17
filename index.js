@@ -31,7 +31,7 @@ app.get('/kepo/:id', function(req, res){
 
 		for (var i =0;i<obj;i++)
 		{
-			console.log(obj['kodeprodi'][i])
+			console.log(obj['kodeprodi'][i]['Kode'])
 		}
 
 		templateurl = 'https://six.akademik.itb.ac.id/publik/'
