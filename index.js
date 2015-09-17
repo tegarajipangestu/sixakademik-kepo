@@ -14,17 +14,24 @@ app.set('view engine', 'ejs');
 
 app.get('/', function(req, res){
 
-  kodekuliah = req.params.kode;
-  programstudi = req.params.ps;
-  kelas = req.params.kelas;
+  kodekuliah = req.query.kode;
+  programstudi = req.query.ps;
+  kelas = req.query.kelas;
 
+  console.log(kodekuliah);
+  console.log(programstudi);
 
   templateurl = 'https://six.akademik.itb.ac.id/publik/'
-  daftarkelasurl = 'daftarkelas.php?ps=135&semester=1&tahun=2015&th_kur=2013'
+  daftarkelasurl = 'daftarkelas.php?ps='+programstudi+'&semester=1&tahun=2015&th_kur=2013'
+
+  console.log(templateurl+daftarkelasurl);
+
+  dummyurl = 'http://www.google.com';
 
   request(templateurl+daftarkelasurl, function(error, response, html){
 
-    if(!error){
+    if(!error)
+    {
       var $ = cheerio.load(html);
 
       $('ol').children('li').each(function(index){
@@ -33,12 +40,17 @@ app.get('/', function(req, res){
        })[0].nodeValue;
        if (text.substr(0, text.indexOf(" ")).toLowerCase() === kodekuliah.toLowerCase())
        {
+        console.log('ada');
         link = $(this).find('ul > li:first-child > a').attr('href');
-        res.end(templateurl+link);
+        res.send(templateurl+link);
       }
 
     })
-      res.end("Not found");
+      res.send("Not found");
+    }
+    else
+    {
+     res.send("Bad Network"); 
     }
 
 
