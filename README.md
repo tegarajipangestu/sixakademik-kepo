@@ -1,5 +1,7 @@
 # sixakademik-kepo
-https://img.shields.io/badge/version-release-blue.svg
+
+[![Dependency Status](https://img.shields.io/badge/version-release-blue.svg)](https://github.com/tegarajipangestu/sixakademik-kepo)
+
 
 A repository for kepoing sixakademik itb
 
