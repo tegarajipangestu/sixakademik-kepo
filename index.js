@@ -18,43 +18,63 @@ app.get('/', function(req, res){
   programstudi = req.query.ps;
   kelas = req.query.kelas;
 
-  console.log(kodekuliah);
-  console.log(programstudi);
-
   templateurl = 'https://six.akademik.itb.ac.id/publik/'
   daftarkelasurl = 'daftarkelas.php?ps='+programstudi+'&semester=1&tahun=2015&th_kur=2013'
 
+  console.log(kodekuliah);
+  console.log(programstudi);
   console.log(templateurl+daftarkelasurl);
 
-  dummyurl = 'http://www.google.com';
 
-  request(templateurl+daftarkelasurl, function(error, response, html){
+  request(templateurl+daftarkelasurl, function(error, response, html)
+  {
 
-    if(!error)
+    if(!error && response.statusCode == 200)
     {
       var $ = cheerio.load(html);
+      var text = "";
 
       $('ol').children('li').each(function(index){
-       var text = $(this).contents().filter(function(){ 
+        var text = $(this).contents().filter(function(){ 
          return this.nodeType == 3; 
        })[0].nodeValue;
-       if (text.substr(0, text.indexOf(" ")).toLowerCase() === kodekuliah.toLowerCase())
-       {
-        console.log('ada');
-        link = $(this).find('ul > li:first-child > a').attr('href');
-        res.send(templateurl+link);
-      }
 
-    })
-      res.send("Not found");
+        if (text.substr(0, text.indexOf(" ")).toLowerCase() === kodekuliah.toLowerCase()){
+
+          detailkelasurl = $(this).find('ul > li:nth-child('+kelas.substr(1,1)+') > a').attr('href');
+          console.log(templateurl+detailkelasurl);
+
+          request(templateurl+detailkelasurl, function(error, response, html)
+          {
+            var $ = cheerio.load(html);
+            text = $('pre').text();
+            console.log(text);
+            res.send(text);
+
+            var jsonOutput = {};
+            jsonOutput['coba'] = 'coba';
+
+            var string = "{\"key\":\"value\"}";
+            var obj = JSON.parse(string);
+            var output = "{'Fakultas' : 'hubahuba'}";
+            console.log(jsonOutput);
+            // res.send(output);
+          })
+        }
+      })
     }
-    else
+    else if (!error && response.statusCode==404)
     {
-     res.send("Bad Network"); 
+      res.status(404).send("Tidak ditemukan kelas dengan kode "+kodekuliah); 
     }
-
+    else if (response.statusCode==500)
+    {
+      res.status(500).send("Terjadi kesalahan pada server"); 
+    }
 
   })
+
+
 });
 
 app.listen(app.get('port'), function() {
