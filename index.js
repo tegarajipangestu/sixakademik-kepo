@@ -4,6 +4,18 @@ var request = require('request');
 var cheerio = require('cheerio');
 var app = express();
 
+String.prototype.matchAll = function(regexp) {
+  var matches = [];
+  this.replace(regexp, function() {
+    var arr = ([]).slice.call(arguments, 0);
+    var extras = arr.splice(-2);
+    arr.index = extras[0];
+    arr.input = extras[1];
+    matches.push(arr);
+  });
+  return matches.length ? matches : null;
+};
+
 app.set('port', (process.env.PORT || 5000));
 
 app.use(express.static(__dirname + '/public'));
@@ -48,16 +60,45 @@ app.get('/', function(req, res){
           {
             var $ = cheerio.load(html);
             text = $('pre').text();
-            console.log(text);
-            res.send(text);
+
+            metadata_regex = /(.*?)\n(?:Program Studi\s\s:\s)(.*)\n(?:Semester\s\s:\s)(.{1})(?:\/)(.*)\n\n(?:Kode\/Mata Kuliah\s:\s)(.{6})(?:\s\/\s)(.*)(?:,)(\s.)(?:\sSKS)\n(?:No\.\sKelas\/Dosen\s\s:\s)(.{2})(?:\s\/\s)(.*)\n\n(?:-----------------------------------------------------------)\n(?:No\.   NIM         NAMA)\n(?:-----------------------------------------------------------)\n(?:.\n*)*\n(?:-----------------------------------------------------------)\n(?:Total\sPeserta\s=\s)(.{2})/g;
+            studentnim_regex = /([\d]{8})   (.*)/g;
+            // res.send(text);
+
+            var result = metadata_regex.exec(text);
+            // var student_result = text.matchAll(studentnim_regex);
+            // res.send(student_result);
+
+            // console.log(text);
+            // console.log(regex)
 
             var jsonOutput = {};
-            jsonOutput['coba'] = 'coba';
+            // console.log(result);
 
-            var string = "{\"key\":\"value\"}";
-            var obj = JSON.parse(string);
-            var output = "{'Fakultas' : 'hubahuba'}";
-            console.log(jsonOutput);
+            jsonOutput['fakultas'] = result[1];
+            jsonOutput['prodi'] = result[2];
+            jsonOutput['semester'] = result[3];
+            jsonOutput['tahun'] = result[4];
+            jsonOutput['kode'] = result[5];
+            jsonOutput['mata_kuliah'] = result[6];
+            jsonOutput['sks'] = result[7];
+            jsonOutput['kelas'] = result[8];
+            jsonOutput['dosen'] = result[9];
+            jsonOutput['jumlah peserta'] = result[10];
+            jsonOutput['peserta'] = [];
+            // $.each(student_result, function(i,val))
+            do {
+              match = studentnim_regex.exec(text);
+              if (match)
+              {
+                jsonOutput['peserta'].push({
+                  nim: match[1],
+                  nama: match[2].trim()
+                });                
+              }
+            }
+            while (match);
+            res.send(jsonOutput);
             // res.send(output);
           })
         }
