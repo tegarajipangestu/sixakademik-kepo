@@ -1,4 +1,6 @@
 # sixakademik-kepo
+https://img.shields.io/badge/version-release-blue.svg
+
 A repository for kepoing sixakademik itb
 
 
